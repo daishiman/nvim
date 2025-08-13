@@ -6,9 +6,15 @@
 
 return {
   -- nvim-treesitter：高度なシンタックスハイライト
+  -- 🚨 一時的に無効化（アーキテクチャ問題のため）
   {
     "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",  -- プラグインインストール後に自動で言語パーサーを更新
+    enabled = false,  -- 一時的に無効化
+    build = function()
+      -- アーキテクチャの問題を解決するため、強制的に再コンパイル
+      vim.cmd("TSUpdate")
+      vim.cmd("TSInstall! lua javascript typescript python go rust json yaml markdown")
+    end,
     event = { "BufReadPost", "BufNewFile" },  -- ファイルを開いた時に読み込み
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",  -- テキストオブジェクト（関数やクラスなど）を拡張
@@ -17,35 +23,28 @@ return {
     },
     config = function()
       require("nvim-treesitter.configs").setup({
-        -- 自動インストールする言語パーサーのリスト
+        -- 自動インストールする言語パーサーのリスト（アーキテクチャ問題回避のため基本的なもののみ）
         ensure_installed = {
-          "bash",          -- シェルスクリプト
-          "c",             -- C言語
-          "css",           -- CSS
-          "dockerfile",    -- Dockerfile
-          "go",            -- Go言語
-          "gomod",         -- Go modules
-          "gosum",         -- Go sum
-          "html",          -- HTML
-          "javascript",    -- JavaScript
-          "json",          -- JSON
-          "jsonc",         -- JSONコメント付き
-          "lua",           -- Lua
-          "luadoc",        -- Luaドキュメント
-          "luap",          -- Luaパターン
-          "markdown",      -- Markdown
-          "markdown_inline", -- インラインMarkdown
-          "python",        -- Python
-          "query",         -- Treesitterクエリ
-          "regex",         -- 正規表現
-          "toml",          -- TOML設定ファイル
-          "tsx",           -- TypeScript JSX
-          "typescript",    -- TypeScript
+          -- 基本的な言語のみ自動インストール
+          "lua",           -- Neovim設定用
           "vim",           -- Vimscript
           "vimdoc",        -- Vimドキュメント
-          "yaml",          -- YAML
-          "rust",          -- Rust
+          "query",         -- Treesitterクエリ
         },
+
+        -- 追加言語は手動インストール推奨（アーキテクチャ問題回避）
+        -- 手動インストール方法:
+        -- :TSInstall javascript typescript python go rust json yaml markdown
+        -- 
+        -- ensure_installed_manual = {
+        --   "bash", "c", "css", "dockerfile", "go", "gomod", "gosum", 
+        --   "html", "javascript", "json", "jsonc", "luadoc", "luap", 
+        --   "markdown", "markdown_inline", "python", "regex", "toml", 
+        --   "tsx", "typescript", "yaml", "rust"
+        -- },
+
+        -- 自動インストールを無効化（アーキテクチャ問題回避）
+        auto_install = false,
 
         -- シンタックスハイライトの設定
         highlight = {

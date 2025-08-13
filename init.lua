@@ -47,6 +47,26 @@ vim.opt.rtp:prepend(lazypath)
 require("config.options")    -- エディタの基本設定
 require("config.keymaps")    -- キーボードショートカット
 require("config.autocmds")   -- 自動実行コマンド
+
+-- =====================================================
+-- ディレクトリ自動表示設定（プラグイン読み込み前に準備）
+-- =====================================================
+-- グローバル変数でディレクトリ情報を保存
+vim.g.nvim_tree_should_open = false
+vim.g.nvim_tree_target_dir = vim.fn.getcwd()
+
+-- 引数がディレクトリの場合は記録
+if vim.fn.argc() > 0 then
+  local arg = vim.fn.argv(0)
+  if arg == "." or vim.fn.isdirectory(arg) == 1 then
+    vim.g.nvim_tree_should_open = true
+    if arg == "." then
+      vim.g.nvim_tree_target_dir = vim.fn.getcwd()
+    else
+      vim.g.nvim_tree_target_dir = vim.fn.fnamemodify(arg, ":p")
+    end
+  end
+end
 require("config.lsp-keymaps") -- LSPキーマップ設定
 
 -- =====================================================

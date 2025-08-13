@@ -29,6 +29,11 @@ opt.background = "dark"   -- ダークテーマ
 opt.signcolumn = "yes"    -- 左端に記号用の列を常に表示
 opt.colorcolumn = "120"   -- 120文字目に縦線（長すぎる行の目安）
 
+-- ファイルエクスプローラーの設定
+-- netrw（標準のファイルブラウザ）を無効化してnvim-treeを使用
+vim.g.loaded_netrw = 1       -- netrw無効化
+vim.g.loaded_netrwPlugin = 1 -- netrwプラグイン無効化
+
 -- バックスペース
 opt.backspace = "indent,eol,start"  -- バックスペースで何でも削除可能
 
