@@ -92,15 +92,23 @@ return {
           number = false,                   -- 行番号非表示
           relativenumber = false,           -- 相対行番号非表示
           signcolumn = "yes",               -- サインカラム表示
-          mappings = {
-            custom_only = false,
-            list = {
-              { key = "u", action = "dir_up" },  -- u で親ディレクトリ
-              { key = "v", action = "vsplit" },   -- v で垂直分割で開く
-              { key = "s", action = "split" },    -- s で水平分割で開く
-            },
-          },
         },
+
+        -- =====================================================
+        -- キーマップ設定（最新のon_attach方式）
+        -- =====================================================
+        on_attach = function(bufnr)
+          local api = require("nvim-tree.api")
+
+          -- デフォルトキーマップを設定
+          api.config.mappings.default_on_attach(bufnr)
+
+          -- カスタムキーマップを追加
+          local opts = { buffer = bufnr, noremap = true, silent = true, nowait = true }
+          vim.keymap.set("n", "u", api.tree.change_root_to_parent, opts)  -- u で親ディレクトリ
+          vim.keymap.set("n", "v", api.node.open.vertical, opts)          -- v で垂直分割で開く
+          vim.keymap.set("n", "s", api.node.open.horizontal, opts)        -- s で水平分割で開く
+        end,
 
         -- =====================================================
         -- レンダラー（見た目）設定
@@ -282,8 +290,8 @@ return {
         -- 更新設定
         -- =====================================================
         update_focused_file = {
-          enable = true,                    -- フォーカスファイル更新を有効
-          update_root = true,               -- ルート更新
+          enable = true,                    -- フォーカスファイル更新を有効（現在のファイル位置に自動移動）
+          update_root = false,              -- ルート更新は無効（ディレクトリ変更は手動のみ）
           ignore_list = {},                 -- 無視リスト
         },
 
@@ -300,7 +308,7 @@ return {
         -- =====================================================
         remove_keymaps = false,             -- デフォルトキーマップを削除しない
         sync_root_with_cwd = true,          -- 作業ディレクトリと同期
-        reload_on_bufenter = true,          -- バッファ入力時にリロード
+        reload_on_bufenter = false,         -- バッファ入力時のリロードを無効（自動展開防止）
         respect_buf_cwd = false,            -- バッファのcwdを無視
       })
 

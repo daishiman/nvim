@@ -5,6 +5,7 @@ keymap.set("i", "jk", "<ESC>", { desc = "挿入モードを終了" })
 
 -- 検索ハイライトを消す
 keymap.set("n", "<leader>nh", ":nohl<CR>", { desc = "検索ハイライトをクリア" })
+keymap.set("n", "<Esc>", ":nohl<CR><Esc>", { desc = "ESCで検索ハイライトもクリア" })
 
 -- 削除してもコピーしない（xキーの挙動を変更）
 keymap.set("n", "x", '"_x', { desc = "ヤンクせずに削除" })
@@ -21,11 +22,17 @@ keymap.set("n", "<Leader>jj", "<C-w>j", { desc = "下へ移動" })
 keymap.set("n", "<Leader>kk", "<C-w>k", { desc = "上へ移動" })
 keymap.set("n", "<Leader>ll", "<C-w>l", { desc = "右へ移動" })
 
--- ウィンドウサイズ変更
+-- ウィンドウサイズ変更（Ctrl + 矢印）
 keymap.set("n", "<C-Up>", ":resize -2<CR>", { desc = "上にリサイズ" })
 keymap.set("n", "<C-Down>", ":resize +2<CR>", { desc = "下にリサイズ" })
 keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "左にリサイズ" })
 keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "右にリサイズ" })
+
+-- ウィンドウサイズ変更（リーダーキー版）
+keymap.set("n", "<leader>sk", ":resize -2<CR>", { desc = "高さを小さく" })
+keymap.set("n", "<leader>sj", ":resize +2<CR>", { desc = "高さを大きく" })
+keymap.set("n", "<leader>sh", ":vertical resize -2<CR>", { desc = "幅を小さく" })
+keymap.set("n", "<leader>sl", ":vertical resize +2<CR>", { desc = "幅を大きく" })
 
 -- タブ操作
 keymap.set("n", "<leader>to", "<cmd>tabnew<CR>", { desc = "新しいタブを開く" })

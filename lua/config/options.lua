@@ -52,6 +52,8 @@ opt.swapfile = false      -- スワップファイルを作らない
 opt.backup = false        -- バックアップファイルを作らない
 opt.undofile = true       -- アンドゥ履歴を保存
 opt.undodir = os.getenv("HOME") .. "/.vim/undodir"  -- アンドゥ履歴の保存先
+opt.autowrite = true      -- バッファを離れる時に自動保存
+opt.autowriteall = true   -- より積極的な自動保存
 
 -- スクロール設定
 opt.scrolloff = 8         -- 上下に最低8行表示
@@ -75,3 +77,44 @@ opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,te
 -- パフォーマンス設定
 opt.lazyredraw = true     -- マクロ実行中は画面を更新しない
 opt.redrawtime = 1500     -- 再描画のタイムアウト
+
+-- 自動保存設定
+-- テキスト変更や挿入モード終了時に自動保存を実行
+local autosave_group = vim.api.nvim_create_augroup("AutoSave", { clear = true })
+
+-- 挿入モード終了時に自動保存
+vim.api.nvim_create_autocmd("InsertLeave", {
+  group = autosave_group,
+  pattern = "*",
+  callback = function()
+    -- バッファが変更されていて、ファイル名が存在する場合のみ保存
+    if vim.bo.modified and vim.fn.expand('%') ~= '' then
+      vim.cmd('silent! write!')
+    end
+  end,
+  desc = "挿入モード終了時に自動保存"
+})
+
+-- テキスト変更時に自動保存（ノーマルモード）
+vim.api.nvim_create_autocmd("TextChanged", {
+  group = autosave_group,
+  pattern = "*",
+  callback = function()
+    if vim.bo.modified and vim.fn.expand('%') ~= '' then
+      vim.cmd('silent! write!')
+    end
+  end,
+  desc = "テキスト変更時に自動保存"
+})
+
+-- 一定時間カーソルが停止した時に自動保存（updatetime後）
+vim.api.nvim_create_autocmd("CursorHold", {
+  group = autosave_group,
+  pattern = "*",
+  callback = function()
+    if vim.bo.modified and vim.fn.expand('%') ~= '' then
+      vim.cmd('silent! write!')
+    end
+  end,
+  desc = "カーソル停止時に自動保存"
+})
